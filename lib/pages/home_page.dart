@@ -1,3 +1,4 @@
+import 'package:appbboxxlog/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget { // Correction ici
@@ -15,15 +16,34 @@ class MyHomePage extends StatefulWidget { // Correction ici
     final  _passwordController = TextEditingController();
     bool _isObscure = true;
     final FocusNode _focusNode = FocusNode();
+    final ApiService _apiService = ApiService();
+
+    void _login() async{
+      if (_formKey.currentState!.validate()) {
+        try {
+          final response = await _apiService.login(
+          _emailController.text, 
+          _passwordController.text);
+        print('Connexion reussie: $response');
+        } catch (e) {
+          print('Connexion echouer: ${e.toString()}');
+          //print('Statut de la réponse: ${response.statusCode}');
+          //print('Corps de la réponse: ${response.body}');
+        }
+        print(_emailController.text);
+        print(_passwordController.text);            
+                     
+      }
+    }
 
     @override
-  void initState() {
-    super.initState();
-    // Ajouter un listener pour le FocusNode
-    _focusNode.addListener(() {
-      setState(() {}); // Met à jour l'état lorsque le focus change
-    });
-  }
+    void initState() {
+      super.initState();
+      // Ajouter un listener pour le FocusNode
+      _focusNode.addListener(() {
+        setState(() {}); // Met à jour l'état lorsque le focus change
+      });
+    }
 
   @override
   void dispose() {
@@ -52,7 +72,7 @@ class MyHomePage extends StatefulWidget { // Correction ici
               ),
               //const Padding(padding: EdgeInsets.only(top: 10)),
               const SizedBox(height: 10,),
-                Padding(padding: const EdgeInsets.all(15),
+                Padding(padding: const EdgeInsets.all(30),
                  child:  TextFormField(
                   controller: _emailController,
                   validator: (value){
@@ -63,6 +83,7 @@ class MyHomePage extends StatefulWidget { // Correction ici
                     }else if(!value.contains(".")){
                       return "Veuillez remplir correctement le champs Adresse e-mail";
                     }
+                    return null;
                   },
                   decoration:   const InputDecoration(
                     labelText: "Adresse e-mail",
@@ -83,7 +104,7 @@ class MyHomePage extends StatefulWidget { // Correction ici
                 //)
                 ),
                const SizedBox(height: 10,),
-                Padding(padding: const EdgeInsets.all(15),
+                Padding(padding: const EdgeInsets.all(30),
                  child:  TextFormField(
                   focusNode: _focusNode,
                   controller: _passwordController,
@@ -118,21 +139,18 @@ class MyHomePage extends StatefulWidget { // Correction ici
                   //style: const TextStyle(color: Colors.black),
                 //)
                 ), 
-                Padding(padding: const EdgeInsets.all(15), 
+                Padding(padding: const EdgeInsets.all(30), 
                 child: 
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(onPressed: (){
-                    if (_formKey.currentState!.validate()) {
-                      //
-                    }
-                    return null;
+                    _login();
                   }, 
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2)
+                        borderRadius: BorderRadius.circular(5)
                       )
                     ),
                   child: const Text("Se connecter", style: TextStyle(fontSize: 20),)),
